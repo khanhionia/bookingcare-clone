@@ -8,7 +8,18 @@ import cors from 'cors';
 require('dotenv').config();
 
 let app = express();
-app.use(cors({ origin: true }));
+const whitelist = ["http://localhost:3000", "http://localhost:8080"]
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error("Not allowed by CORS"))
+        }
+    },
+    credentials: true,
+}
+app.use(cors(corsOptions))
 
 //config app
 app.use(bodyParser.json())
